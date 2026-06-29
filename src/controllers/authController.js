@@ -58,6 +58,8 @@ const loginUser = async (req, res) => {
 
     const user = await User.findOne({ email });
 
+    console.log("User Found:", user);
+
     if (!user) {
       return res.status(400).json({
         success: false,
@@ -65,7 +67,12 @@ const loginUser = async (req, res) => {
       });
     }
 
+    console.log("Entered Password:", password);
+    console.log("Stored Password:", user.password);
+
     const isPasswordMatch = await bcrypt.compare(password, user.password);
+
+    console.log("Password Match:", isPasswordMatch);
 
     if (!isPasswordMatch) {
       return res.status(400).json({
@@ -80,12 +87,15 @@ const loginUser = async (req, res) => {
       user,
     });
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       success: false,
       message: error.message,
     });
   }
 };
+
 
 module.exports = {
   registerUser,
