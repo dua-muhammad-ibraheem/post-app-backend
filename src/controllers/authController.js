@@ -1,7 +1,6 @@
-
 const bcrypt = require("bcryptjs");
 const User = require("../models/userModel");
-
+const jwt = require("jsonwebtoken");
 // ================= REGISTER =================
 const registerUser = async (req, res) => {
   try {
@@ -57,7 +56,7 @@ const loginUser = async (req, res) => {
     }
 
     const user = await User.findOne({ email });
-
+    user.password = undefined;
     console.log("User Found:", user);
 
     if (!user) {
@@ -81,9 +80,20 @@ const loginUser = async (req, res) => {
       });
     }
 
+    const token = jwt.sign(
+      {
+        id: user._id,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      },
+    );
+
     res.status(200).json({
       success: true,
       message: "Login successful",
+      token,
       user,
     });
   } catch (error) {
@@ -96,9 +106,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-
 module.exports = {
   registerUser,
   loginUser,
 };
-
