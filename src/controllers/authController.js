@@ -56,7 +56,7 @@ const loginUser = async (req, res) => {
     }
 
     const user = await User.findOne({ email });
-    user.password = undefined;
+   console.log("Stored Password:", user.password);
     console.log("User Found:", user);
 
     if (!user) {
@@ -80,22 +80,24 @@ const loginUser = async (req, res) => {
       });
     }
 
-    const token = jwt.sign(
-      {
-        id: user._id,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      },
-    );
+  const token = jwt.sign(
+  {
+    id: user._id,
+  },
+  process.env.JWT_SECRET,
+  {
+    expiresIn: "7d",
+  }
+);
 
-    res.status(200).json({
-      success: true,
-      message: "Login successful",
-      token,
-      user,
-    });
+user.password = undefined;
+
+res.status(200).json({
+  success: true,
+  message: "Login successful",
+  token,
+  user,
+});
   } catch (error) {
     console.log(error);
 
