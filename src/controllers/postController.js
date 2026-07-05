@@ -14,7 +14,7 @@ const createPost = async (req, res) => {
     const post = await Post.create({
       title,
       description,
-      user: "6a4924376a454956ad54d93d", // hina User ID
+      user: req.user.id, // hina User ID
     });
 
     res.status(201).json({
