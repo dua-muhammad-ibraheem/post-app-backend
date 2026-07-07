@@ -83,8 +83,52 @@ const deletePost = async (req, res) => {
   }
 };
 
+// ================= LIKE / UNLIKE POST =================
+const likePost = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: "Post not found",
+      });
+    }
+
+    const userId = req.user.id;
+
+    const alreadyLiked = post.likes.includes(userId);
+
+    if (alreadyLiked) {
+      post.likes.pull(userId);
+      await post.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "Post unliked",
+        likes: post.likes.length,
+      });
+    }
+
+    post.likes.push(userId);
+    await post.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Post liked",
+      likes: post.likes.length,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createPost,
   getPosts,
   deletePost,
+  likePost,
 };
