@@ -4,6 +4,7 @@ const router = express.Router();
 const {
   createPost,
   getPosts,
+  getMyPosts,
   deletePost,
   likePost,
 } = require("../controllers/postController");
@@ -11,6 +12,8 @@ const {
 const { protect } = require("../middleware/authMiddleware");
 
 router.post("/create", protect, createPost);
+
+router.get("/myposts", protect, getMyPosts);
 
 router.get("/", getPosts);
 

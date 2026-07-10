@@ -123,12 +123,34 @@ const likePost = async (req, res) => {
       success: false,
       message: error.message,
     });
+
+    // ================= GET MY POSTS =================
+const getMyPosts = async (req, res) => {
+  try {
+    const posts = await Post.find({
+      user: req.user.id,
+    })
+      .populate("user", "username profileImage")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      posts,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
   }
 };
 
 module.exports = {
   createPost,
   getPosts,
+  getMyPosts,
   deletePost,
   likePost,
 };
