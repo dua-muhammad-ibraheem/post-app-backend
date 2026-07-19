@@ -9,7 +9,10 @@ const commentRoutes = require("./routes/commentRoutes");
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "https://post-app-frontend-alpha.vercel.app",
+    ],
     credentials: true,
   })
 );
