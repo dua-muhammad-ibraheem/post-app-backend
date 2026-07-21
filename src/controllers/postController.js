@@ -147,10 +147,50 @@ const likePost = async (req, res) => {
   }
 };
 
+// ================= UPDATE POST =================
+const updatePost = async (req, res) => {
+  try {
+    const { title, description } = req.body;
+
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: "Post not found",
+      });
+    }
+
+    if (post.user.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to edit this post",
+      });
+    }
+
+    post.title = title || post.title;
+    post.description = description || post.description;
+
+    await post.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Post updated successfully",
+      post,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createPost,
   getPosts,
   getMyPosts,
+  updatePost,
   deletePost,
   likePost,
 };
