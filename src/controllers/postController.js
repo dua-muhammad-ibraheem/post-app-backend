@@ -3,6 +3,8 @@ const Post = require("../models/postModel");
 // ================= CREATE POST =================
 const createPost = async (req, res) => {
   try {
+
+    
     const { title, description } = req.body;
 
     if (!title || !description) {
@@ -12,9 +14,16 @@ const createPost = async (req, res) => {
       });
     }
 
+    let image = "";
+
+    if (req.file) {
+      image = req.file.path;
+    }
+
     const post = await Post.create({
       title,
       description,
+      image,
       user: req.user.id,
     });
 
@@ -24,11 +33,16 @@ const createPost = async (req, res) => {
       post,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+  console.error("===== ERROR START =====");
+  console.dir(error, { depth: null });
+  console.error(error.stack);
+  console.error("===== ERROR END =====");
+
+  res.status(500).json({
+    success: false,
+    message: error.message,
+  });
+}
 };
 
 // ================= GET ALL POSTS =================
